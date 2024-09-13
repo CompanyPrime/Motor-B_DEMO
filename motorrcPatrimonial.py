@@ -270,6 +270,7 @@ def pagePatrimonial():
 
      #st.write(coef_protecao_incendio)
      
+<<<<<<< HEAD
      
      ###################################################################################################################################################################
      # PROTEÇÃO CONTRA ROUBO
@@ -321,6 +322,30 @@ def pagePatrimonial():
 
 
     
+=======
+   
+     
+     
+     # Exibe os dados filtrados apenas se houver algo selecionado
+     #if not coef_tx_cobertura.empty:
+          #st.dataframe(coef_tx_cobertura)
+     #else:
+     #     st.write("Nenhuma cobertura selecionada.")
+
+     
+     #edited_df = st.data_editor(import_tx_cobertura)
+
+     #favorite_command = edited_df.loc[edited_df["LMI"].idxmax()]["LMI"]
+     #st.markdown(f"Your favorite command is **{favorite_command}** 🎈")
+
+
+
+     #distinct_cobertura = import_tx_cobertura['cobertura'].unique().tolist()
+     #response_cobertura = st.multiselect('Seleciona a cobertura', distinct_cobertura)
+     #coef_cobertura = import_tx_cobertura[import_tx_cobertura['cobertura'].isin(response_cobertura)]
+     #st.write(import_tx_cobertura)
+     
+>>>>>>> c3f01e7e3a003eb1cbad9ee08929e1f0382f4cb4
      #st.subheader("Selecione a Classe de Bônus")
      #distinct_BONUS = import_coef_bonus['BONUS'].unique().tolist()
      #response_bonus= st.selectbox('Classe de Bônus',distinct_BONUS, index=None, placeholder="Selecione uma Opção")
