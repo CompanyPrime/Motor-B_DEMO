@@ -265,21 +265,7 @@ def pagePatrimonial():
 
      #st.write(coef_protecao_inc)
      
-     
-     ###################################################################################################################################################################
-     # PROTEÇÃO CONTRA INCENDIO
-     distinct_protecao_inc = import_coef_protecao_inc['protecao_incendio'].unique().tolist()
-     response_protecao_inc= st.multiselect('Sistemas Protecionais 100% Operantes - Incêndio:', distinct_protecao_inc, placeholder="Selecione uma Opção")
-     
-     # Filtrando a base com as coberturas selecionadas
-     if response_protecao_inc:
-          coef_protecao_inc = import_coef_protecao_inc[import_coef_protecao_inc['protecao_incendio'].isin(response_protecao_inc)]
-     else:
-          coef_protecao_inc = pd.DataFrame()  # Retorna DataFrame vazio se nada for selecionado
-
-     #st.write(coef_protecao_inc)
-
-    
+   
      
      
      # Exibe os dados filtrados apenas se houver algo selecionado
