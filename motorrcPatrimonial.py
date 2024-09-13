@@ -227,8 +227,7 @@ def pagePatrimonial():
           """, unsafe_allow_html=True
           )
           st.markdown(f"""<div class="label-font">Valor Total do Risco</div>
-                          <div class="small-font">R$ {formatted_risco}</div>
-                    """, unsafe_allow_html=True)
+                          """, unsafe_allow_html=True)
     
      distinct_empresa_mulher = import_empresa_mulher['empresa_mulher'].unique().tolist()
      response_empresa_mulher = st.selectbox('A empresa tem mais que 50% de mulheres em seu quadro de funcionários?',distinct_empresa_mulher, index=None, placeholder="Selecione uma Opção")
