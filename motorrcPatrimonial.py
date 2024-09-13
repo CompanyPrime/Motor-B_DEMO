@@ -30,13 +30,13 @@ def pagePatrimonial():
                     "atividade":['Academia de Ginástica', 'Acetileno', 'Acetona', 'Ácidos', 'Acolchoados'],
                     "coef_atividade":[1.500000, 1.150000, 1.150000, 1.150000, 1.100000]}
 
-     import_coef_shopping = {"chave": [1,1], "local_shopping" : ['Sim', 'Não'], "coef_shopping" :[1.000000, 0.500000]}
+     import_coef_shopping = {"chave": [1,1], "local_shopping" : ['Sim', 'Não'], "coef_shopping" :[0.500000, 1.000000]}
 
-     import_coef_lucro_cess  = {"chave": [1,1,1,1,1],
-                    "lucro_cessante":['Não contratado', '1 mês', '2 meses', '3 meses', '4 meses'],
-                    "coef_lucro_cessante":[1.000000, 1.000000, 1.000000, 1.000000, 1.000000]}
+     import_coef_lucro_cess  = {"chave": [1,1,1,1,1,1,1,1,1,1,1,1,1],
+                    "lucro_cessante":['Não contratado', '1 mês', '2 meses', '3 meses', '4 meses', '5 meses', '6 meses', '7 meses', '8 meses', '9 meses', '10 meses', '11 meses', '12 meses'],
+                    "coef_lucro_cessante":[1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000]}
 
-     import_coef_protecao_inc  = {"chave": [1,1,1,1,1],
+     import_coef_protecao_incendio  = {"chave": [1,1,1,1,1],
                     "protecao_incendio":['Alarme de incêndio',
                                          'Extintor (com carga e dentro do prazo de validade)',
                                          'Hidrante',
@@ -44,7 +44,6 @@ def pagePatrimonial():
                                          'Sprinkers'],
                     "coef_protecao_incendio":[0.950000, 0.950000, 0.850000, 0.950000, 0.800000]}
      
-
      import_coef_protecao_roubo  = {"chave": [1,1,1,1],
                     "protecao_roubo":['Alarme monitorado por empresa especializada 24hrs',
                                       'Risco localiza-se a partir de 2º andar',
@@ -85,8 +84,7 @@ def pagePatrimonial():
                     "coef_tip_risco":[1.500000, 2.000000, 2.000000, 1.500000]}
 
      import_coef_qtde_cobert  = {"chave": [1,1],
-                    "qtde_cobert":['Até 6',
-                                   'Acima de 6'],
+                    "qtde_cobert":['Até 6', 'Acima de 6'],
                     "coef_qtde_cobert":[1.000000, 0.900000]}
 
      import_coef_bonus = {"chave": [1,1,1,1,1,1,1,1,1,1,1],
@@ -108,11 +106,9 @@ def pagePatrimonial():
                               'C101408-Cobertura Adicional Nº. 014 - Desmoronamento'],
                "coef_TX_cobertura":[1.0203, 1.0204, 1.0241, 1.0242, 1.3664, 1.0080, 1.6863, 1.0344]}
      
-         
      import_empresa_mulher = {"chave": [1,1,1],
                     "empresa_mulher": ['Sim', 'Não', 'Não sei informar'],
                     "coef_empresa_mulher":[0.970000, 1.0000000, 1.000000]}
-
 
      #LOADS DE AGRAVO/DESCONTO
      import_load_da              = {"chave": [1], "coef_load_DA":                     [1.250000]}
@@ -139,7 +135,7 @@ def pagePatrimonial():
      import_coef_bonus           = pd.DataFrame(import_coef_bonus)
      import_coef_atividade       = pd.DataFrame(import_coef_atividade)
      import_coef_shopping        = pd.DataFrame(import_coef_shopping)
-     import_coef_protecao_inc    = pd.DataFrame(import_coef_protecao_inc)
+     import_coef_protecao_incendio    = pd.DataFrame(import_coef_protecao_incendio)
      import_coef_lucro_cess      = pd.DataFrame(import_coef_lucro_cess)
      import_coef_protecao_roubo  = pd.DataFrame(import_coef_protecao_roubo)
      import_coef_tot_sin_ind     = pd.DataFrame(import_coef_tot_sin_ind)
@@ -202,7 +198,8 @@ def pagePatrimonial():
      response_lucro_cess= st.selectbox('PI Lucro Cessante',distinct_lucro_cess, index=None, placeholder="Selecione uma Opção")
      coef_lucro_cess = import_coef_lucro_cess[import_coef_lucro_cess['lucro_cessante']==response_lucro_cess]
      
-     colvl1, colvl2, colvl3, colvl4 = st.columns(4)
+     locale.setlocale(locale.LC_NUMERIC, 'pt_BR.UTF-8')  # Definir apenas para números
+     colvl1, colvl2, colvl3 = st.columns(3)
      with colvl1:
           vl_edificio = st.number_input('Valor do Edifício', min_value=0.00)
 
@@ -212,23 +209,31 @@ def pagePatrimonial():
      with colvl3:
           vl_ben_edificio = st.number_input('Valor dos Bens Específicos', min_value=0.00)
 
-     with colvl4:
-          vl_risco = vl_edificio + vl_conteudo + vl_ben_edificio
-      
+     vl_risco = vl_edificio + vl_conteudo + vl_ben_edificio
+
+     #with colvl4:
+     #     vl_risco = vl_edificio + vl_conteudo + vl_ben_edificio
+     #     formatted_risco = locale.format_string("%.2f", vl_risco, grouping=True)
+
           # Custom CSS para diminuir o tamanho da letra da métrica
-          st.markdown(
-               f"""
-               <style>
-               .small-font {{
-                    font-size: 15px !important;
-                    color: black !important;
-          }}
-          </style>
-          """, unsafe_allow_html=True
-          )
-          st.markdown(f"""<div class="label-font">Valor Total do Risco</div>
-                          """, unsafe_allow_html=True)
+     #     st.markdown(
+     #          f"""
+     #         <style>
+     #          .small-font {{
+     #               font-size: 15px !important;
+     #               color: black !important;
+     #     }}
+     #     </style>
+     #     """, unsafe_allow_html=True
+     #     )
+     #     st.markdown(f"""<div class="label-font">Valor Total do Risco</div>
+     #                     <div class="small-font">R$ {formatted_risco}</div>
+     #               """, unsafe_allow_html=True)
     
+     distinct_qtde_cobert = import_coef_qtde_cobert['qtde_cobert'].unique().tolist()
+     response_qtde_cobert = st.selectbox('Quantidade de Coberturas',distinct_qtde_cobert, index=None, placeholder="Selecione as Opções")
+     coef_qtde_cobert = import_coef_qtde_cobert[import_coef_qtde_cobert['qtde_cobert'] == response_qtde_cobert]
+
      distinct_empresa_mulher = import_empresa_mulher['empresa_mulher'].unique().tolist()
      response_empresa_mulher = st.selectbox('A empresa tem mais que 50% de mulheres em seu quadro de funcionários?',distinct_empresa_mulher, index=None, placeholder="Selecione uma Opção")
      coef_empresa_mulher = import_empresa_mulher[import_empresa_mulher['empresa_mulher'] == response_empresa_mulher]
@@ -237,7 +242,7 @@ def pagePatrimonial():
      # COBERTURAS
      st.title("Coberturas")
      distinct_tx_cobertura = import_tx_cobertura['cobertura'].unique().tolist()
-     response_tx_cobertura = st.multiselect('Selecione a Cobertura', distinct_tx_cobertura, placeholder="Selecione uma Opção")
+     response_tx_cobertura = st.multiselect('Selecione a Cobertura', distinct_tx_cobertura, placeholder="Coberturas")
 
      # Filtrando a base com as coberturas selecionadas
      if response_tx_cobertura:
@@ -254,53 +259,68 @@ def pagePatrimonial():
      
      ###################################################################################################################################################################
      # PROTEÇÃO CONTRA INCENDIO
-     distinct_protecao_inc = import_coef_protecao_inc['protecao_incendio'].unique().tolist()
-     response_protecao_inc= st.multiselect('Sistemas Protecionais 100% Operantes - Incêndio:', distinct_protecao_inc, placeholder="Selecione uma Opção")
+     distinct_protecao_incendio = import_coef_protecao_incendio['protecao_incendio'].unique().tolist()
+     response_protecao_incendio= st.multiselect('Sistemas Protecionais 100% Operantes - Incêndio:', distinct_protecao_incendio, placeholder="Selecione as Opções desejada")
      
      # Filtrando a base com as coberturas selecionadas
-     if response_protecao_inc:
-          coef_protecao_inc = import_coef_protecao_inc[import_coef_protecao_inc['protecao_incendio'].isin(response_protecao_inc)]
+     if response_protecao_incendio:
+          coef_protecao_incendio = import_coef_protecao_incendio[import_coef_protecao_incendio['protecao_incendio'].isin(response_protecao_incendio)]
      else:
-          coef_protecao_inc = pd.DataFrame()  # Retorna DataFrame vazio se nada for selecionado
+          coef_protecao_incendio = pd.DataFrame()  # Retorna DataFrame vazio se nada for selecionado
 
-     #st.write(coef_protecao_inc)
+     #st.write(coef_protecao_incendio)
      
      
      ###################################################################################################################################################################
-     # PROTEÇÃO CONTRA INCENDIO
-     distinct_protecao_inc = import_coef_protecao_inc['protecao_incendio'].unique().tolist()
-     response_protecao_inc= st.multiselect('Sistemas Protecionais 100% Operantes - Incêndio:', distinct_protecao_inc, placeholder="Selecione uma Opção")
+     # PROTEÇÃO CONTRA ROUBO
+     distinct_protecao_roubo = import_coef_protecao_roubo['protecao_roubo'].unique().tolist()
+     response_protecao_roubo= st.multiselect('Sistemas Protecionais 100% Operantes - Roubo:', distinct_protecao_roubo, placeholder="Selecione as Opções desejada")
      
      # Filtrando a base com as coberturas selecionadas
-     if response_protecao_inc:
-          coef_protecao_inc = import_coef_protecao_inc[import_coef_protecao_inc['protecao_incendio'].isin(response_protecao_inc)]
+     if response_protecao_roubo:
+          coef_protecao_roubo = import_coef_protecao_roubo[import_coef_protecao_roubo['protecao_roubo'].isin(response_protecao_roubo)]
      else:
-          coef_protecao_inc = pd.DataFrame()  # Retorna DataFrame vazio se nada for selecionado
+          coef_protecao_roubo = pd.DataFrame()  # Retorna DataFrame vazio se nada for selecionado
 
-     #st.write(coef_protecao_inc)
+     #st.write(coef_protecao_roubo)
+
+     ###################################################################################################################################################################
+     # Fator de Desconto/Agravo
+     coef_desconto_agravo = st.number_input("Fator de Desconto/Agravo (OBS: Para desconto, adicionar o 'Menos' na frente do Número. Ex. 5% de desconto = -5,00)", value=100.00, format="%.2f")
+
+     if coef_desconto_agravo < 100:
+          coef_desconto_agravo = (coef_desconto_agravo / 100) + 1
+
+     if coef_desconto_agravo >= 100:
+          coef_desconto_agravo = (coef_desconto_agravo / 100)
+     
+     coef_desconto_agravo = pd.DataFrame({'coef_desc_agravo': [coef_desconto_agravo]})
+
+     # Exibe o DataFrame no Streamlit
+     #st.write(coef_desconto_agravo)
+
+
+     ###################################################################################################################################################################
+     # DEMOSTRA OS FATORES
+
+
+     #st.write(coef_tiprisco)
+     #st.write(coef_atividade)
+     #st.write(coef_shopping)
+     #st.write(coef_tot_sin_ind)
+     #st.write(coef_tip_construcao)
+     #st.write(coef_tip_contratacao)
+     #st.write(coef_tip_cobert)
+     #st.write(df_LMI)
+     #st.write(coef_lucro_cess)
+     #st.write(vl_risco)
+     #st.write(coef_qtde_cobert)
+     #st.write(coef_empresa_mulher)
+     #st.write(coef_protecao_incendio)
+     #st.write(coef_protecao_roubo)
+
 
     
-     
-     
-     # Exibe os dados filtrados apenas se houver algo selecionado
-     #if not coef_tx_cobertura.empty:
-          #st.dataframe(coef_tx_cobertura)
-     #else:
-     #     st.write("Nenhuma cobertura selecionada.")
-
-     
-     #edited_df = st.data_editor(import_tx_cobertura)
-
-     #favorite_command = edited_df.loc[edited_df["LMI"].idxmax()]["LMI"]
-     #st.markdown(f"Your favorite command is **{favorite_command}** 🎈")
-
-
-
-     #distinct_cobertura = import_tx_cobertura['cobertura'].unique().tolist()
-     #response_cobertura = st.multiselect('Seleciona a cobertura', distinct_cobertura)
-     #coef_cobertura = import_tx_cobertura[import_tx_cobertura['cobertura'].isin(response_cobertura)]
-     #st.write(import_tx_cobertura)
-     
      #st.subheader("Selecione a Classe de Bônus")
      #distinct_BONUS = import_coef_bonus['BONUS'].unique().tolist()
      #response_bonus= st.selectbox('Classe de Bônus',distinct_BONUS, index=None, placeholder="Selecione uma Opção")
