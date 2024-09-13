@@ -202,7 +202,6 @@ def pagePatrimonial():
      response_lucro_cess= st.selectbox('PI Lucro Cessante',distinct_lucro_cess, index=None, placeholder="Selecione uma Opção")
      coef_lucro_cess = import_coef_lucro_cess[import_coef_lucro_cess['lucro_cessante']==response_lucro_cess]
      
-     locale.setlocale(locale.LC_NUMERIC, 'pt_BR.UTF-8')  # Definir apenas para números
      colvl1, colvl2, colvl3, colvl4 = st.columns(4)
      with colvl1:
           vl_edificio = st.number_input('Valor do Edifício', min_value=0.00)
@@ -215,8 +214,7 @@ def pagePatrimonial():
 
      with colvl4:
           vl_risco = vl_edificio + vl_conteudo + vl_ben_edificio
-          formatted_risco = locale.format_string("%.2f", vl_risco, grouping=True)
-
+      
           # Custom CSS para diminuir o tamanho da letra da métrica
           st.markdown(
                f"""
