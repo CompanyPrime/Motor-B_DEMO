@@ -202,7 +202,6 @@ def pagePatrimonial():
      response_lucro_cess= st.selectbox('PI Lucro Cessante',distinct_lucro_cess, index=None, placeholder="Selecione uma Opção")
      coef_lucro_cess = import_coef_lucro_cess[import_coef_lucro_cess['lucro_cessante']==response_lucro_cess]
      
-     locale.setlocale(locale.LC_NUMERIC, 'pt_BR.UTF-8')  # Definir apenas para números
      colvl1, colvl2, colvl3, colvl4 = st.columns(4)
      with colvl1:
           vl_edificio = st.number_input('Valor do Edifício', min_value=0.00)
@@ -215,8 +214,7 @@ def pagePatrimonial():
 
      with colvl4:
           vl_risco = vl_edificio + vl_conteudo + vl_ben_edificio
-          formatted_risco = locale.format_string("%.2f", vl_risco, grouping=True)
-
+      
           # Custom CSS para diminuir o tamanho da letra da métrica
           st.markdown(
                f"""
@@ -229,8 +227,7 @@ def pagePatrimonial():
           """, unsafe_allow_html=True
           )
           st.markdown(f"""<div class="label-font">Valor Total do Risco</div>
-                          <div class="small-font">R$ {formatted_risco}</div>
-                    """, unsafe_allow_html=True)
+                          """, unsafe_allow_html=True)
     
      distinct_empresa_mulher = import_empresa_mulher['empresa_mulher'].unique().tolist()
      response_empresa_mulher = st.selectbox('A empresa tem mais que 50% de mulheres em seu quadro de funcionários?',distinct_empresa_mulher, index=None, placeholder="Selecione uma Opção")
