@@ -1,9 +1,13 @@
 import streamlit as st
 import pandas as pd
 from api_receita import consulta_cnpj
-import locale
+
+#######################################################################################################################################
+# Definir a configuração da página (deve ser a primeira função Streamlit no script)
+st.set_page_config(layout="wide")
 
 def pagePatrimonial():
+
      ##############################################################################################################################################
      #INCLUINDO O LOGO DA EMPRESA
      # URL da imagem do site
@@ -13,7 +17,7 @@ def pagePatrimonial():
      st.image(url_imagem, width=200)
 
      ##############################################################################################################################################
-     #PRODUTO - TRANSPORTE OU OPERACIONAL
+     #PRODUTO - RC PATRIMONIAL
      st.subheader("Produto - Patrimonial")
 
      st.write("---") #Pular Linha     
@@ -22,9 +26,19 @@ def pagePatrimonial():
 
      ##############################################################################################################################################
      #CRIA O DICIONÁRIO COM AS RELATIVIDADES DE OPERACIONAL
-     ml_intercepto= {"chave": [1],
-                    "modelo": ['patrimonial'],
-                    "intercepto":[1541.96]}
+     #ml_intercepto= {"chave": [1],
+     #               "modelo": ['patrimonial'],
+     #               "intercepto":[1541.96]}
+
+     import_cobertura_taxa = pd.read_excel("coberturas_taxa.xlsx")
+
+     import_coef_tip_risco  = {"chave": [1,1,1,1],
+                    "cod_tip_risco": [1, 4, 3, 2],
+                    "tip_risco":['Comércio',
+                                 'Depósito/Armazém/Centro Logístico/Transportadora/Distribuidora',
+                                 'Indústria',
+                                 'Serviço'],
+                    "coef_tip_risco":[1.500000, 2.000000, 2.000000, 1.500000]}
 
      import_coef_atividade  = {"chave": [1,1,1,1,1],
                     "atividade":['Academia de Ginástica', 'Acetileno', 'Acetona', 'Ácidos', 'Acolchoados'],
@@ -76,13 +90,6 @@ def pagePatrimonial():
                                        'Prédio + Conteúdo'],
                     "coef_tip_contratacao":[0.800000, 0.800000, 1.000000]}
 
-     import_coef_tip_risco  = {"chave": [1,1,1,1],
-                    "tip_risco":['Comércio',
-                                 'Depósito/Armazém/Centro Logístico/Transportadora/Distribuidora',
-                                 'Indústria',
-                                 'Serviço'],
-                    "coef_tip_risco":[1.500000, 2.000000, 2.000000, 1.500000]}
-
      import_coef_qtde_cobert  = {"chave": [1,1],
                     "qtde_cobert":['Até 6', 'Acima de 6'],
                     "coef_qtde_cobert":[1.000000, 0.900000]}
@@ -95,17 +102,7 @@ def pagePatrimonial():
                          "tip_seg": ['Novo', 'Renovação','Renovação Congênere'],
                          "coef_tipseg":[1.000000, 0.909505, 0.859752]}
      
-     import_tx_cobertura = {"chave": [1,1,1,1,1,1,1,1],
-               "cobertura":  ['C101401-Cobertura Básica nº 001A - Incêndio, Raio, Explosão, Implosão e Fumaça',
-                              'C101402-Cobertura Básica nº 001B - Incêndio, (Inclusive de Tumultos, Greves e Lock-out), Raio, Explosão, Implosão e Fumaça',
-                              'C101403-Cobertura Básica nº 001C - Incêndio, Raio, Explosão, Implosão, Fumaça e Queda de Aeronaves',
-                              'C101404-Cobertura Básica nº 001D - Incêndio, (Inclusive decorrente de Tumulto, Greves e Lock-out), Raio, Explosão, Implosão, Fumaça e Queda de Aeronaves',
-                              'C101405-Cobertura Adicional Nº. 006 - Danos Elétricos',
-                              'C101406-Cobertura Adicional Nº. 007 - Tumultos, Greves, Lockout e Atos Dolosos',
-                              'C101407-Cobertura Adicional Nº. 011 - Quebra de Vidros, Espelhos, Mármores e Granitos',
-                              'C101408-Cobertura Adicional Nº. 014 - Desmoronamento'],
-               "coef_TX_cobertura":[1.0203, 1.0204, 1.0241, 1.0242, 1.3664, 1.0080, 1.6863, 1.0344]}
-     
+    
      import_empresa_mulher = {"chave": [1,1,1],
                     "empresa_mulher": ['Sim', 'Não', 'Não sei informar'],
                     "coef_empresa_mulher":[0.970000, 1.0000000, 1.000000]}
@@ -129,10 +126,7 @@ def pagePatrimonial():
 
      ##############################################################################################################################################
      #TRANSFORMA OS ARQUIVOS DO DICIONÁRIO EM DATAFRAME
-
-     ml_intercepto               = pd.DataFrame(ml_intercepto)
-     import_coef_tipseg          = pd.DataFrame(import_coef_tipseg)
-     import_coef_bonus           = pd.DataFrame(import_coef_bonus)
+    
      import_coef_atividade       = pd.DataFrame(import_coef_atividade)
      import_coef_shopping        = pd.DataFrame(import_coef_shopping)
      import_coef_protecao_incendio    = pd.DataFrame(import_coef_protecao_incendio)
@@ -145,8 +139,7 @@ def pagePatrimonial():
      import_coef_tip_risco       = pd.DataFrame(import_coef_tip_risco)
      import_coef_qtde_cobert     = pd.DataFrame(import_coef_qtde_cobert)
      import_empresa_mulher       = pd.DataFrame(import_empresa_mulher)
-     import_tx_cobertura         = pd.DataFrame(import_tx_cobertura)
-     
+          
      import_load_da              = pd.DataFrame(import_load_da)
      import_load_do              = pd.DataFrame(import_load_do)
      import_load_lucro           = pd.DataFrame(import_load_lucro)
@@ -166,6 +159,7 @@ def pagePatrimonial():
      ##############################################################################################################################################
      #INICIO DO QAR-QUESTIONÁRIO DE AVALIAÇÃO DE RISCO - OPERACIONAL
      #st.subheader("Tipo de Risco")
+
      distinct_tip_risco = import_coef_tip_risco['tip_risco'].unique().tolist()
      response_tip_risco= st.selectbox('Tipo de Risco',distinct_tip_risco, index=None, placeholder="Selecione uma Opção")
      coef_tiprisco = import_coef_tip_risco[import_coef_tip_risco['tip_risco']==response_tip_risco]
@@ -174,6 +168,8 @@ def pagePatrimonial():
      response_atividade= st.selectbox('Atividade',distinct_atividade, index=None, placeholder="Selecione uma Opção")
      coef_atividade = import_coef_atividade[import_coef_atividade['atividade']==response_atividade]
 
+     ##############################################################################################################################################################
+     # Demais Questionário de Risco
      distinct_shopping = import_coef_shopping['local_shopping'].unique().tolist()
      response_shopping= st.selectbox('O risco está localizado em Shopping?',distinct_shopping, index=None, placeholder="Selecione uma Opção")
      coef_shopping = import_coef_shopping[import_coef_shopping['local_shopping']==response_shopping]
@@ -190,15 +186,10 @@ def pagePatrimonial():
      response_tip_contratacao= st.selectbox('Tipo de Contratação',distinct_tip_contratacao, index=None, placeholder="Selecione uma Opção")
      coef_tip_contratacao = import_coef_tip_contratacao[import_coef_tip_contratacao['tip_contratacao']==response_tip_contratacao]
 
-     distinct_tip_cobert = import_coef_tip_cobert['tip_cobert'].unique().tolist()
-     response_tip_cobert= st.selectbox('Tipo de Cobertura',distinct_tip_cobert, index=None, placeholder="Selecione uma Opção")
-     coef_tip_cobert = import_coef_tip_cobert[import_coef_tip_cobert['tip_cobert']==response_tip_cobert]
-
      distinct_lucro_cess = import_coef_lucro_cess['lucro_cessante'].unique().tolist()
      response_lucro_cess= st.selectbox('PI Lucro Cessante',distinct_lucro_cess, index=None, placeholder="Selecione uma Opção")
      coef_lucro_cess = import_coef_lucro_cess[import_coef_lucro_cess['lucro_cessante']==response_lucro_cess]
      
-     #locale.setlocale(locale.LC_NUMERIC, 'pt_BR.UTF-8')  # Definir apenas para números
      colvl1, colvl2, colvl3 = st.columns(3)
      with colvl1:
           vl_edificio = st.number_input('Valor do Edifício', min_value=0.00)
@@ -211,25 +202,6 @@ def pagePatrimonial():
 
      vl_risco = vl_edificio + vl_conteudo + vl_ben_edificio
 
-     #with colvl4:
-     #     vl_risco = vl_edificio + vl_conteudo + vl_ben_edificio
-     #     formatted_risco = locale.format_string("%.2f", vl_risco, grouping=True)
-
-          # Custom CSS para diminuir o tamanho da letra da métrica
-     #     st.markdown(
-     #          f"""
-     #         <style>
-     #          .small-font {{
-     #               font-size: 15px !important;
-     #               color: black !important;
-     #     }}
-     #     </style>
-     #     """, unsafe_allow_html=True
-     #     )
-     #     st.markdown(f"""<div class="label-font">Valor Total do Risco</div>
-     #                     <div class="small-font">R$ {formatted_risco}</div>
-     #               """, unsafe_allow_html=True)
-    
      distinct_qtde_cobert = import_coef_qtde_cobert['qtde_cobert'].unique().tolist()
      response_qtde_cobert = st.selectbox('Quantidade de Coberturas',distinct_qtde_cobert, index=None, placeholder="Selecione as Opções")
      coef_qtde_cobert = import_coef_qtde_cobert[import_coef_qtde_cobert['qtde_cobert'] == response_qtde_cobert]
@@ -238,24 +210,6 @@ def pagePatrimonial():
      response_empresa_mulher = st.selectbox('A empresa tem mais que 50% de mulheres em seu quadro de funcionários?',distinct_empresa_mulher, index=None, placeholder="Selecione uma Opção")
      coef_empresa_mulher = import_empresa_mulher[import_empresa_mulher['empresa_mulher'] == response_empresa_mulher]
     
-     ###################################################################################################################################################################
-     # COBERTURAS
-     st.title("Coberturas")
-     distinct_tx_cobertura = import_tx_cobertura['cobertura'].unique().tolist()
-     response_tx_cobertura = st.multiselect('Selecione a Cobertura', distinct_tx_cobertura, placeholder="Coberturas")
-
-     # Filtrando a base com as coberturas selecionadas
-     if response_tx_cobertura:
-          coef_tx_cobertura = import_tx_cobertura[import_tx_cobertura['cobertura'].isin(response_tx_cobertura)]
-     else:
-          coef_tx_cobertura = pd.DataFrame()  # Retorna DataFrame vazio se nada for selecionado
-
-     if not coef_tx_cobertura.empty:
-          df_LMI = coef_tx_cobertura[['cobertura']].copy()
-          df_LMI['LMI-(LimitInPage)'] = 0
-          df_LMI = st.data_editor(df_LMI)
-     else:
-          st.write("Nenhuma cobertura selecionada.")
      
      ###################################################################################################################################################################
      # PROTEÇÃO CONTRA INCENDIO
@@ -270,6 +224,29 @@ def pagePatrimonial():
 
      #st.write(coef_protecao_incendio)
      
+    # Transpondo a base, colocando 'protecao_incendio' como colunas e 'coef_protecao_incendio' como valores
+     if not coef_protecao_incendio.empty:
+          coef_prot_incendio_transp = coef_protecao_incendio.pivot_table(
+          index=[col for col in coef_protecao_incendio.columns if col not in ['protecao_incendio', 'coef_protecao_incendio']],
+          columns='protecao_incendio',
+          values='coef_protecao_incendio',
+          aggfunc='first'  # Para garantir que valores duplicados não causem erros
+    ).reset_index()
+
+          # Renomear colunas
+          coef_prot_incendio_transp.columns.name = None  # Remover o nome da coluna (protecao_incendio)
+          coef_prot_incendio_transp.columns = [
+                  f'coef_protecao_incendio_{col.split()[0]}' if col != '' else col 
+        for col in coef_prot_incendio_transp.columns
+         ]
+     else:
+          coef_prot_incendio_transp = pd.DataFrame({'chave': [1], 'coef_protecao_incendio': [1.000000] })
+
+     coef_prot_incendio_transp = coef_prot_incendio_transp.rename(columns={'coef_protecao_incendio_chave' : 'chave'})
+
+     # Exibir a base transposta
+     #st.write(coef_prot_incendio_transp)
+
      
      ###################################################################################################################################################################
      # PROTEÇÃO CONTRA ROUBO
@@ -284,6 +261,28 @@ def pagePatrimonial():
 
      #st.write(coef_protecao_roubo)
 
+     # Transpondo a base, colocando 'protecao_roubo' como colunas e 'coef_protecao_roubo' como valores
+     if not coef_protecao_roubo.empty:
+          coef_prot_roubo_transp = coef_protecao_roubo.pivot_table(
+          index=[col for col in coef_protecao_roubo.columns if col not in ['protecao_roubo', 'coef_protecao_roubo']],
+          columns='protecao_roubo',
+          values='coef_protecao_roubo',
+          aggfunc='first'  # Para garantir que valores duplicados não causem erros
+    ).reset_index()
+
+          # Renomear colunas
+          coef_prot_roubo_transp.columns.name = None  # Remover o nome da coluna (protecao_roubo)
+          coef_prot_roubo_transp.columns = [
+                  f'coef_protecao_roubo_{col.split()[0]}' if col != '' else col 
+        for col in coef_prot_roubo_transp.columns
+         ]
+     else:
+          coef_prot_roubo_transp = pd.DataFrame({'chave': [1], 'coef_protecao_roubo': [1.000000] })
+
+     coef_prot_roubo_transp = coef_prot_roubo_transp.rename(columns={'coef_protecao_roubo_chave' : 'chave'})
+               
+     #st.write(coef_prot_roubo_transp)
+
      ###################################################################################################################################################################
      # Fator de Desconto/Agravo
      coef_desconto_agravo = st.number_input("Fator de Desconto/Agravo (OBS: Para desconto, adicionar o 'Menos' na frente do Número. Ex. 5% de desconto = -5,00)", value=100.00, format="%.2f")
@@ -295,61 +294,81 @@ def pagePatrimonial():
           coef_desconto_agravo = (coef_desconto_agravo / 100)
      
      coef_desconto_agravo = pd.DataFrame({'coef_desc_agravo': [coef_desconto_agravo]})
-
-     # Exibe o DataFrame no Streamlit
-     #st.write(coef_desconto_agravo)
-
-
-     ###################################################################################################################################################################
-     # DEMOSTRA OS FATORES
-
-
-     #st.write(coef_tiprisco)
-     #st.write(coef_atividade)
-     #st.write(coef_shopping)
-     #st.write(coef_tot_sin_ind)
-     #st.write(coef_tip_construcao)
-     #st.write(coef_tip_contratacao)
-     #st.write(coef_tip_cobert)
-     #st.write(df_LMI)
-     #st.write(coef_lucro_cess)
-     #st.write(vl_risco)
-     #st.write(coef_qtde_cobert)
-     #st.write(coef_empresa_mulher)
-     #st.write(coef_protecao_incendio)
-     #st.write(coef_protecao_roubo)
-
-
-    
-     #st.subheader("Selecione a Classe de Bônus")
-     #distinct_BONUS = import_coef_bonus['BONUS'].unique().tolist()
-     #response_bonus= st.selectbox('Classe de Bônus',distinct_BONUS, index=None, placeholder="Selecione uma Opção")
-     #coef_bonus = import_coef_bonus[import_coef_bonus['BONUS']==response_bonus]
-
+     coef_desconto_agravo['chave'] = 1
      
-          
-     ##############################################################################################################################################
-     #FAZ O MERGE DAS TABELAS QAR COM INTERCEPTO 
-     #ml_1 = pd.merge(ml_intercepto, coef_tipseg,       on='chave', how='left')
+     ###################################################################################################################################################################
+     ###################################################################################################################################################################
+     # Coberturas: Seleciona o bloco de Cobertura
+     
+     # Seleciona o Bloco das Coberturas
+     distinct_bloco_cobert = import_cobertura_taxa['bloco_cobertura'].unique().tolist()
+     response_bloco_cobert = st.multiselect('Bloco de Cobertura', distinct_bloco_cobert, placeholder="Selecione as Opções Desejadas") #, default='Básica (37)')
 
-     #ml_1 = pd.merge(ml_1,  coef_tipempresa,           on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_uf,                   on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_LMI,                  on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_bonus,                on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_tipTanque,            on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_matConstTubulacao,    on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_matConstrucaoTanque,  on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_conteudoTanque,       on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_protTransbordamento,  on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_detectaVazTubulacao,  on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_detectaVazTanque,     on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_contencaoTanque,      on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_controleTanqueAereo,  on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_brigadaIncendio,      on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_sujeitoAlagamento,    on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_EteLocalRisco,        on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_lodoEte,              on='chave', how='left')
-     #ml_1 = pd.merge(ml_1,  coef_sinistroUltAno,       on='chave', how='left')
+     df_cobertura_selection = import_cobertura_taxa.query("bloco_cobertura in @response_bloco_cobert")
+
+     distinct_cobertura = df_cobertura_selection['desc_cobertura'].unique().tolist()
+     response_cobertura = st.multiselect('Selecione a Cobertura', distinct_cobertura, placeholder="Selecione as Opções Desejadas")
+
+     #Adiciona o filtro de Tipo de Risco na base de cobertura e Filtra as coberturas Selecionadas no Formulário
+     selected_cobertura = import_cobertura_taxa.query("desc_cobertura in @response_cobertura & tip_risco == @response_tip_risco")
+     selected_cobertura['chave'] = 1
+
+     df_cobertura_final = selected_cobertura[['chave', 'bloco_cobertura', 'cod_cobertura', 'desc_cobertura', 'lmi_maximo_produto', 'LMI']]
+     
+     # Exibe o DataFrame final no formulário para edição do valor LMI
+     st.subheader("Edição do Valor LMI")
+     novos_lmi = {}
+
+     if not df_cobertura_final.empty:
+      for index, row in df_cobertura_final.iterrows():
+          col1, col2 = st.columns([4, 1])
+
+          # Primeira coluna: Descrição da cobertura
+          with col1:
+               st.write(f"**Cobertura**: {row['desc_cobertura']} (Máximo: {row['lmi_maximo_produto']:.2f})")
+
+          # Segunda coluna: Entrada para edição do LMI
+          with col2:
+               novo_lmi = st.number_input(f"LMI",
+                                        value=float(row['LMI']),
+                                        min_value=0.0,
+                                        max_value=float(row['lmi_maximo_produto']),
+                                        format="%.2f",
+                                        key=f"lmi_{index}")
+               # Armazena o novo LMI em um dicionário
+               novos_lmi[row['desc_cobertura']] = novo_lmi
+
+     # Botão para confirmar a inclusão dos novos valores de LMI
+     if st.button("Incluir Valor LMI"):
+          for cobertura, lmi in novos_lmi.items():
+               #Atualiza os valores de LMI no DataFrame final
+               df_cobertura_final.loc[df_cobertura_final['desc_cobertura'] == cobertura, 'LMI'] = lmi
+
+          #Exibe uma única mensagem de sucesso
+          st.success("Novos valores de LMI incluídos com sucesso!")
+
+     #st.write(df_cobertura_final)
+
+     ##############################################################################################################################################
+     #FAZ O MERGE DAS TABELAS QAR
+     
+     ml_1 = pd.merge(df_cobertura_final, coef_tiprisco, on='chave', how='left')
+
+     ml_1 = pd.merge(ml_1, coef_atividade,            on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_shopping,             on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_tot_sin_ind,          on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_tip_construcao,       on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_tip_contratacao,      on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_lucro_cess,           on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_qtde_cobert,          on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_empresa_mulher,       on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_desconto_agravo,      on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_prot_incendio_transp, on='chave', how='left')
+     ml_1 = pd.merge(ml_1, coef_prot_roubo_transp,    on='chave', how='left')
+     
+
+     #st.write(ml_1)
+
 
      # MERGE DOS LOADS DE CARREGAMENTO
      #ml_1 = pd.merge(ml_1, import_load_da,              on='chave', how='left')
