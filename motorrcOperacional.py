@@ -7,7 +7,7 @@ def pageOperacional():
      ##############################################################################################################################################
      #INCLUINDO O LOGO DA EMPRESA
      # URL da imagem do site
-     url_imagem = 'https://www.stangdistribuidora.com.br/static/media/LOGO_STANG.daa8c5bd.svg'
+     url_imagem = 'https://www.bancobmg.com.br/lumis-theme/br/com/bmg/portal/theme/bmg-portal/img/logo-bmg.svg'
 
      # Exibir a imagem do site
      st.image(url_imagem, width=200)

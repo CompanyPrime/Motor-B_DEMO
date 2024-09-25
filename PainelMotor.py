@@ -3,6 +3,7 @@ import streamlit as st
 #from motorrctransp      import pageTransporte
 from motorrcPatrimonial import pagePatrimonial
 
+
 ##############################################################################################################################################
 #CHAMANDO O MOTOR POR PRODUTO
 #st.set_page_config(layout="wide") para deixar a tela justificada e ocupar toda a tela.
@@ -20,6 +21,5 @@ if pageProduto =='RC Patrimonial':
 
 #if pageProduto =='RC Ambiental Transporte':
 #     pageTransporte()
-
 
 # streamlit run "c:/Users/fabricio/OneDrive - MB CONSULTORIA EMPRESARIAL E CONTABIL LTDA/1.Programas Python Company/BMG/Motor_calculo/PainelMotor.py"
